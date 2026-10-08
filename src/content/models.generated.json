@@ -1,0 +1,90 @@
+[
+  {
+    "slug": "medbox",
+    "title": "Medicine box",
+    "glb": "/models/medbox.glb",
+    "thumb": "/models/medbox.webp",
+    "assembled": true,
+    "parts": 10,
+    "plates": 5,
+    "sourceTriangles": 23624,
+    "displayTriangles": 23624,
+    "size": [
+      162.4,
+      169,
+      112.5
+    ],
+    "bytes": 162316,
+    "hinge": {
+      "parts": [
+        "geometry_1",
+        "handle_bail",
+        "latch_insert"
+      ],
+      "point": [
+        0,
+        81.02,
+        -80.5
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "slug": "z-ring",
+    "title": "Z-Ring",
+    "glb": "/models/z-ring.glb",
+    "thumb": "/models/z-ring.webp",
+    "assembled": true,
+    "parts": 2,
+    "plates": 2,
+    "sourceTriangles": 111646,
+    "displayTriangles": 111646,
+    "size": [
+      65,
+      74.4,
+      9.2
+    ],
+    "bytes": 572956,
+    "hinge": null
+  },
+  {
+    "slug": "tissue-box",
+    "title": "Ribbed tissue box",
+    "glb": "/models/tissue-box.glb",
+    "thumb": "/models/tissue-box.webp",
+    "assembled": true,
+    "parts": 3,
+    "plates": 2,
+    "sourceTriangles": 48572,
+    "displayTriangles": 48572,
+    "size": [
+      161.1,
+      163.1,
+      76
+    ],
+    "bytes": 326764,
+    "hinge": null
+  },
+  {
+    "slug": "cat-clicker",
+    "title": "Cat clicker",
+    "glb": "/models/cat-clicker.glb",
+    "thumb": "/models/cat-clicker.webp",
+    "assembled": true,
+    "parts": 7,
+    "plates": 1,
+    "sourceTriangles": 593190,
+    "displayTriangles": 159999,
+    "size": [
+      45,
+      45,
+      45.7
+    ],
+    "bytes": 1014912,
+    "hinge": null
+  }
+]

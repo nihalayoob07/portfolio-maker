@@ -1,0 +1,309 @@
+@import "tailwindcss";
+
+/* Maker studio: a light workshop grey, near-black ink, and filament colours. Everything chunky is
+   drawn in ink: 3px outlines and solid offset shadows, like a sticker or a printed part. */
+@theme {
+  --color-bg: #eef0f3;
+  --color-surface: #ffffff;
+  --color-raised: #e2e5ea;
+  --color-ink: #141414;
+  --color-muted: #5b5f66;
+  --color-faint: #9ba0a7;
+  --color-line: rgb(20 20 20 / 0.14);
+  --color-accent: #ff6b35;
+  --color-accent-soft: #c2410c;
+  --color-teal: #00a6a6;
+  --color-sun: #ffc93c;
+  --color-lilac: #b7a6ff;
+  --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-bg);
+  /* Keeps the layout still when an overlay hides the scrollbar. */
+  scrollbar-gutter: stable;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-sun);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@layer base {
+  /* No lone words on the last line. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+  a,
+  button {
+    transition-property: color, background-color, border-color, opacity, box-shadow, translate, scale;
+    transition-duration: 180ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@layer components {
+  /* Big type: heavy, tight and mixed case. */
+  .display {
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.88;
+  }
+
+  /* A chunky card: ink outline and a solid shadow. */
+  .chunk {
+    border: 3px solid var(--color-ink);
+    border-radius: 28px;
+    box-shadow: 8px 8px 0 var(--color-ink);
+  }
+  .chunk-sm {
+    border: 2.5px solid var(--color-ink);
+    box-shadow: 4px 4px 0 var(--color-ink);
+  }
+
+  /* Pressable things lift towards the light on hover and sink into their shadow when pressed. */
+  .press {
+    border: 2.5px solid var(--color-ink);
+    box-shadow: 4px 4px 0 var(--color-ink);
+  }
+  .press:hover {
+    translate: -2px -2px;
+    box-shadow: 6px 6px 0 var(--color-ink);
+  }
+  .press:active {
+    translate: 4px 4px;
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+
+  /* A small pill label (replaces the old monospace eyebrow). */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2.5px solid var(--color-ink);
+    border-radius: 9999px;
+    background: var(--color-surface);
+    padding: 0.3rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  /* Link text that rolls up to a copy of itself on hover. */
+  .roll {
+    display: inline-flex;
+    flex-direction: column;
+    height: 1.2em;
+    line-height: 1.2em;
+    overflow: hidden;
+  }
+  .roll > span {
+    transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  a:hover > .roll > span,
+  a:focus-visible > .roll > span {
+    transform: translateY(-100%);
+  }
+
+  /* Workshop dot grid for coloured stages. */
+  .dots {
+    background-image: radial-gradient(rgb(20 20 20 / 0.16) 1.4px, transparent 1.6px);
+    background-size: 22px 22px;
+  }
+}
+
+/* Intro motion, done in CSS so it plays before hydration. */
+@keyframes rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(var(--tilt, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(var(--tilt, 0deg));
+  }
+}
+@keyframes wobble {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  50% {
+    rotate: 3deg;
+  }
+}
+.intro-line {
+  display: block;
+  overflow: hidden;
+}
+.intro-line > span {
+  display: inline-block;
+  animation: rise 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.intro-fade {
+  animation: fade-up 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Stickers slap on and then sway a little. */
+.sticker {
+  transform: rotate(var(--tilt, 0deg));
+  animation:
+    pop-in 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) both,
+    wobble 5s ease-in-out 1s infinite;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Drill reel: the phone buzzes and rings while the alarm is going. */
+@keyframes drill-shake {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+  20% {
+    transform: translate(-4px, 1px) rotate(-1.4deg);
+  }
+  40% {
+    transform: translate(4px, -1px) rotate(1.4deg);
+  }
+  60% {
+    transform: translate(-3px, 0) rotate(-1deg);
+  }
+  80% {
+    transform: translate(3px, 1px) rotate(1deg);
+  }
+}
+@keyframes drill-ring {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+}
+.drill-ring {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .drill-phone[data-ringing="true"] {
+    animation: drill-shake 0.3s linear infinite;
+  }
+  .drill-phone[data-ringing="true"] .drill-ring {
+    animation: drill-ring 1.2s ease-out infinite;
+  }
+}
+
+/* Cat clicker: comic "CLICK!" pops, one per click, scattered over the stage. */
+.sfx {
+  position: absolute;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+  -webkit-text-stroke: 7px #141414;
+  paint-order: stroke fill;
+  text-shadow: 5px 6px 0 #141414;
+  transform: translate(-50%, -50%) rotate(var(--r)) scale(var(--s));
+  animation:
+    sfx-pop 0.38s cubic-bezier(0.2, 1.7, 0.4, 1) both,
+    sfx-fade 0.8s ease-in 6s forwards;
+}
+@keyframes sfx-pop {
+  from {
+    transform: translate(-50%, -50%) rotate(var(--r)) scale(0.2);
+    opacity: 0;
+  }
+}
+@keyframes sfx-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Sound prompt: an equaliser that bounces, and the card dropping in. */
+.sound-bar {
+  transform-origin: bottom;
+  animation: sound-bar 0.9s ease-in-out infinite alternate;
+}
+@keyframes sound-bar {
+  from {
+    transform: scaleY(0.25);
+  }
+}
+@keyframes sound-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) rotate(-2deg) scale(0.95);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sound-bar,
+  .sticker {
+    animation: none;
+  }
+}
