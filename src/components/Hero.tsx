@@ -113,11 +113,11 @@ export function Hero() {
                 height={site.heroImage.height}
                 alt={`Portrait of ${site.name}`}
                 fetchPriority="high"
-                className="absolute bottom-0 left-1/2 h-[96%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom"
+                className="absolute inset-x-0 bottom-0 h-[96%] w-full object-cover object-top"
               />
             </div>
             <span
-              className="sticker chunk-sm absolute top-6 right-5 rounded-full bg-sun px-5 py-3 text-lg font-extrabold"
+              className="sticker chunk-sm absolute -top-5 right-5 rounded-full lg:top-6 bg-sun px-5 py-3 text-lg font-extrabold"
               style={{ "--tilt": "-7deg", animationDelay: "0.6s" } as React.CSSProperties}
             >
               {site.studying} ✦

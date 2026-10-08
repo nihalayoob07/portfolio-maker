@@ -175,12 +175,16 @@ body {
     rotate: 3deg;
   }
 }
+/* The display type's line height is tighter than its letters, so each line gets room below for
+   descenders (the y in Ayoob) and gives it back with a negative margin: same spacing, nothing clipped. */
 .intro-line {
   display: block;
   overflow: hidden;
+  margin-bottom: -0.22em;
 }
 .intro-line > span {
   display: inline-block;
+  padding-bottom: 0.22em;
   animation: rise 1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .intro-fade {

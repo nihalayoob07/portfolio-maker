@@ -11,9 +11,10 @@ export const site = {
   // Set to "/resume.pdf" once a copy without the phone number is in /public.
   resumeUrl: null as string | null,
   // Cut out by scripts/prepare-hero.mjs.
-  heroImage: { src: "/me.webp", srcSet: "/me-1000.webp 1000w, /me.webp 2000w", width: 2000, height: 1763 },
-  // The photo fills the hero's right-hand card: about 40% of the width on desktop, full width below.
-  heroSizes: "(min-width: 1024px) 42vw, 92vw",
+  heroImage: { src: "/me.webp", srcSet: "/me-1000.webp 1000w, /me.webp 1439w", width: 1439, height: 1667 },
+  // The photo covers the right-hand card: its full width, or 96% of its height (about the hero's
+  // height on desktop) times the photo's aspect ratio, whichever is wider.
+  heroSizes: "(min-width: 1024px) max(42vw, 70vh), 92vw",
   roles: [
     { article: "An", word: "Engineer" },
     { article: "A", word: "Full-stack dev" },
