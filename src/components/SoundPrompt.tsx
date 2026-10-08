@@ -30,7 +30,7 @@ export function SoundPrompt() {
         e.preventDefault();
         answer(false);
       }}
-      className="m-auto w-[min(40rem,calc(100%-2.5rem))] overflow-visible bg-transparent text-ink backdrop:bg-bg/70 backdrop:backdrop-blur-md open:animate-[sound-in_0.5s_cubic-bezier(0.2,1.4,0.4,1)]"
+      className="m-auto w-[min(40rem,calc(100%-2.5rem))] overflow-visible bg-transparent text-ink backdrop:bg-bg/85 open:animate-[sound-in_0.5s_cubic-bezier(0.2,1.4,0.4,1)] pointer-fine:backdrop:bg-bg/70 pointer-fine:backdrop:backdrop-blur-md"
     >
       <div className="chunk relative overflow-hidden bg-sun px-7 py-10 text-center md:px-14 md:py-14">
         <div className="dots pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />

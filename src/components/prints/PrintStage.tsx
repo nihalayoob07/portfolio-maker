@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { MousePointerClick } from "lucide-react";
+import { useLite } from "@/lib/device";
 import { useGSAP } from "@/lib/gsap";
 import { keyClick } from "@/lib/sfx";
 import { SoundToggle } from "../SoundToggle";
@@ -77,10 +78,19 @@ export function PrintStage({ model, order, tone }: { model: ModelEntry; order: n
     setReady(true);
     warm.done(order);
   }, [order]);
-  const { onScreen } = useShowcase();
+  const { onScreen, near } = useShowcase();
   // Live once its turn in the warm-up comes, or straight away if someone lands on it first.
+  // Phones can't hold every print's GPU state at once, so there a print is only live within a
+  // screen of its panel (the poster covers it until it has drawn) and is dropped once well past.
   const allowed = useSyncExternalStore(warm.subscribe, warm.allowed, () => 0);
-  const live = allowed > order || onScreen;
+  const lite = useLite();
+  const live = lite ? near : allowed > order || onScreen;
+  // Dropped (phones, scrolled well past): the next canvas has to draw again before it shows.
+  const [wasLive, setWasLive] = useState(live);
+  if (live !== wasLive) {
+    setWasLive(live);
+    if (!live) setReady(false);
+  }
   const clicker = model.slug === "cat-clicker";
   const stage = STAGES[model.slug] ?? { captions: [] };
 
@@ -140,6 +150,7 @@ export function PrintStage({ model, order, tone }: { model: ModelEntry; order: n
             running={onScreen}
             aside={!!stage.aside}
             tone={tone}
+            lite={lite}
             onReady={onReady}
           />
         )}

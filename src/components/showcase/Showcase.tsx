@@ -1,13 +1,26 @@
 "use client";
 
-import { createContext, use, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type Ref, type RefObject } from "react";
+import {
+  createContext,
+  use,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ComponentProps,
+  type ReactNode,
+  type Ref,
+  type RefObject,
+} from "react";
 import { ArrowUpRight } from "lucide-react";
+import { LITE } from "@/lib/device";
 import { gsap } from "@/lib/gsap";
 
 type Link = { label: string; href: string };
 
-const ShowcaseContext = createContext({ onScreen: false });
-// Whether this panel is in the viewport (so 3D scenes can stop rendering when it isn't).
+const ShowcaseContext = createContext({ onScreen: false, near: false });
+// Whether this panel is in the viewport (so 3D scenes can stop rendering when it isn't), and
+// whether it's within a screen of it (phones only keep a 3D scene mounted that close).
 export const useShowcase = () => use(ShowcaseContext);
 
 // A full-screen panel, as on preymaker.com: the stage is fixed and clipped to the panel, so the
@@ -72,12 +85,18 @@ export function Showcase({
       className="relative [clip-path:inset(0)]"
       style={{ height: `${screens * 100}vh` }}
     >
-      <div className={`fixed inset-0 overflow-hidden ${tone}`} inert={!onScreen}>
+      {/* Off screen the stage is hidden outright, so phones don't keep painting panels nobody can see. */}
+      <div className={`fixed inset-0 overflow-hidden ${tone} ${onScreen ? "" : "invisible"}`} inert={!onScreen}>
         <div className="dots absolute inset-0 opacity-60" aria-hidden="true" />
         {still}
-        <ShowcaseContext value={{ onScreen }}>{(eager || near) && children}</ShowcaseContext>
+        <ShowcaseContext value={{ onScreen, near }}>{(eager || near) && children}</ShowcaseContext>
 
-        <div data-dim className="pointer-events-none absolute inset-0 bg-bg/35 backdrop-blur-md" aria-hidden="true" />
+        {/* Blurring a whole screen is too slow for phones; they get a deeper wash instead. */}
+        <div
+          data-dim
+          className="pointer-events-none absolute inset-0 bg-bg/70 pointer-fine:bg-bg/35 pointer-fine:backdrop-blur-md"
+          aria-hidden="true"
+        />
 
         {/* The panel's title card: a big sticker in the middle of the stage until the reel starts. */}
         <div data-intro className="pointer-events-none absolute inset-0 grid place-items-center px-5">
@@ -190,6 +209,18 @@ export function Screen({
         {children}
       </div>
     </div>
+  );
+}
+
+// A captured frame (`src` is the full-size .webp). Phones get the copy at the recording's own
+// width (`-m.webp`, see capture-reels): decoded, the full-size captures of two nearby reels are
+// more image memory than a phone browser will hold, and frames go blank.
+export function Frame({ src, alt = "", ...img }: ComponentProps<"img"> & { src: string }) {
+  return (
+    <picture className="contents">
+      <source media={LITE} srcSet={src.replace(/.webp$/, "-m.webp")} />
+      <img src={src} alt={alt} draggable={false} {...img} />
+    </picture>
   );
 }
 

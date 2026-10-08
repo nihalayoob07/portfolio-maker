@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@/lib/gsap";
 import reel from "@/content/reels/printledger.json";
-import { Captions, type Caption, Cursor, Screen } from "./Showcase";
+import { Captions, type Caption, Cursor, Screen, Frame } from "./Showcase";
 import { INTRO, caption, click, fadeIn, moveTo, reelTimeline } from "./engine";
 
 const [W, H] = reel.viewport;
@@ -77,15 +77,12 @@ export function PrintLedgerReel() {
         className="overflow-hidden rounded-[26px] border-[5px] border-ink shadow-[14px_14px_0_var(--color-ink)]"
       >
         {ORDER.map((id, i) => (
-          // eslint-disable-next-line @next/next/no-img-element -- pre-sized captures, positioned in recording pixels
-          <img
+          <Frame
             key={id}
             data-frame={id}
             src={F[id].src}
-            alt=""
             width={W}
             height={H}
-            draggable={false}
             className="absolute top-0 left-0"
             style={{ opacity: i === 0 ? 1 : 0 }}
           />

@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@/lib/gsap";
 import reel from "@/content/reels/printvault.json";
-import { Captions, type Caption, Cursor, Screen } from "./Showcase";
+import { Captions, type Caption, Cursor, Screen, Frame } from "./Showcase";
 import { INTRO, caption, click, fadeIn, moveTo, reelTimeline, typeText } from "./engine";
 
 const [W, H] = reel.viewport;
@@ -112,8 +112,7 @@ export function PrintVaultReel() {
             className="absolute top-0 left-0"
             style={{ width: W, height: F[id].height, opacity: i === 0 ? 1 : 0 }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized captures, positioned in recording pixels */}
-            <img src={F[id].src} alt="" width={W} height={F[id].height} className="block" draggable={false} />
+            <Frame src={F[id].src} width={W} height={F[id].height} className="block" />
             {id === "checkout" && (
               <>
                 {FIELDS.map(([name]) => (
