@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, type RefObject } from "react";
+import { Suspense, useEffect, useMemo, useRef, useSyncExternalStore, type RefObject } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, useGLTF } from "@react-three/drei";
+import { Environment, Lightformer, PerformanceMonitor, useGLTF } from "@react-three/drei";
 import { EffectComposer, N8AO, ToneMapping } from "@react-three/postprocessing";
 import { ToneMappingMode } from "postprocessing";
 import { models, type ModelEntry } from "@/content/models";
@@ -438,11 +438,27 @@ function Studio({
   );
 }
 
+// Desktop GPUs that can't hold the frame rate on a print (integrated laptop graphics) drop the
+// ambient occlusion pass, which costs as much as the rest of the frame, and render at 1x. One slow
+// print switches every print, for good, so the look doesn't flicker between the two.
+let slowGpu = false;
+const slowListeners = new Set<() => void>();
+const slow = {
+  subscribe: (fn: () => void) => (slowListeners.add(fn), () => void slowListeners.delete(fn)),
+  get: () => slowGpu,
+  set() {
+    if (slowGpu) return;
+    slowGpu = true;
+    slowListeners.forEach((f) => f());
+  },
+};
+
 export default function PrintCanvas({ model, progress, clickedAt, running, aside, tone, lite, onReady }: PrintCanvasProps) {
+  const reduced = useSyncExternalStore(slow.subscribe, slow.get, () => false);
   return (
     <Canvas
       shadows="percentage"
-      dpr={lite ? [1, 1.5] : [1, 1.75]}
+      dpr={lite ? [1, 1.5] : reduced ? 1 : [1, 1.75]}
       frameloop={running ? "always" : "demand"}
       camera={{ fov: 30, position: [0, 100, 400] }}
       // Phones render straight to the screen (with the renderer's own antialiasing and the same
@@ -452,6 +468,7 @@ export default function PrintCanvas({ model, progress, clickedAt, running, aside
         if (lite) gl.toneMapping = THREE.NeutralToneMapping;
       }}
     >
+      {!lite && running && !reduced && <PerformanceMonitor ms={200} iterations={5} bounds={() => [45, Infinity]} onDecline={slow.set} />}
       <color attach="background" args={[tone]} />
       <fog attach="fog" args={[tone, 1000, 4000]} />
       <Suspense fallback={null}>
@@ -459,7 +476,7 @@ export default function PrintCanvas({ model, progress, clickedAt, running, aside
       </Suspense>
       {!lite && (
         <EffectComposer multisampling={4}>
-          <N8AO aoRadius={Math.max(...model.size) * 0.08} distanceFalloff={1} intensity={2.4} quality="medium" halfRes />
+          {!reduced && <N8AO aoRadius={Math.max(...model.size) * 0.08} distanceFalloff={1} intensity={2.4} quality="medium" halfRes />}
           <ToneMapping mode={ToneMappingMode.NEUTRAL} />
         </EffectComposer>
       )}
